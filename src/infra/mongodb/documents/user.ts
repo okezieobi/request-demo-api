@@ -1,8 +1,10 @@
+import { BaseDocument } from "./base";
+
 /**
  * Represents the raw structure of a User document in MongoDB.
  * Using snake_case for database-level consistency.
  */
-export interface UserDocument {
+export interface UserDocument extends BaseDocument {
   first_name: string;
   last_name: string;
   job_title: string;
@@ -14,6 +16,4 @@ export interface UserDocument {
   volume: string;
   source: string;
   notes?: string;
-  created_at: Date;
-  updated_at: Date;
 }

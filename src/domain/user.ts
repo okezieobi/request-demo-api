@@ -1,4 +1,6 @@
-export class User {
+import { Base } from "./base";
+
+export class User extends Base {
   firstName: string;
   lastName: string;
   jobTitle: string;
@@ -12,16 +14,17 @@ export class User {
   description?: string;
 
   constructor(data: Partial<User>) {
-    this.firstName = data.firstName || "";
-    this.lastName = data.lastName || "";
-    this.jobTitle = data.jobTitle || "";
-    this.companyName = data.companyName || "";
-    this.emailAddress = data.emailAddress || "";
-    this.country = data.country || "";
-    this.phoneNumber = data.phoneNumber || "";
+    super(data);
+    this.firstName = data.firstName ?? "";
+    this.lastName = data.lastName ?? "";
+    this.jobTitle = data.jobTitle ?? "";
+    this.companyName = data.companyName ?? "";
+    this.emailAddress = data.emailAddress ?? "";
+    this.country = data.country ?? "";
+    this.phoneNumber = data.phoneNumber ?? "";
     this.companyWebsite = data.companyWebsite;
     this.monthlyProcessingVolume = data.monthlyProcessingVolume || "";
-    this.referralSource = data.referralSource || "";
+    this.referralSource = data.referralSource ?? "";
     this.description = data.description;
   }
 

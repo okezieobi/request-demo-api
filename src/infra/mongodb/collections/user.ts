@@ -1,4 +1,4 @@
 import { mongoDatabase } from "../client";
-import { UserDocument } from "../docs/user";
+import { UserDocument } from "../documents/user";
 
 export const UserCollection = mongoDatabase.collection<UserDocument>("users");
