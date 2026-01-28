@@ -1,0 +1,62 @@
+# --- Version Control ---
+.git
+.gitignore
+.hg
+.svn
+
+# --- Docker Specifics ---
+# Ignore the Dockerfiles and compose files themselves
+Dockerfile*
+docker-compose*
+compose.y*ml
+.dockerignore
+
+# --- Dependencies ---
+# Never copy local dependencies; let the container install them
+node_modules/
+jspm_packages/
+bower_components/
+**/obj/
+**/bin/
+
+# --- Build Outputs & Cache ---
+.next/
+.cache/
+build/
+dist/
+out/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- IDEs & System Files ---
+.vscode/
+.idea/
+.vs/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+**/*.user
+**/*.*proj.user
+**/.classpath
+**/.project
+**/.settings/
+**/.toolstarget/
+
+# --- Sensitive Data & Configs ---
+# This is a safety net for local development secrets
+.env
+.env.*
+!.env.example
+secrets.dev.yaml
+values.dev.yaml
+**/*.dbmdl
+**/*.jfm
+
+# --- Documentation ---
+# Usually unnecessary inside the running container
+LICENSE
+README.md
+docs/
