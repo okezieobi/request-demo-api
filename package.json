@@ -1,0 +1,50 @@
+{
+  "name": "request-demo-api",
+  "version": "1.0.0",
+  "description": "Demo API",
+  "scripts": {
+    "start": "DEBUG=request-demo-api:* node dist/index.js",
+    "build": "npx tsc",
+    "dev": "DEBUG=request-demo-api:* nodemon src/index.ts",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/okezieobi/request-demo-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/okezieobi/request-demo-api/issues"
+  },
+  "homepage": "https://github.com/okezieobi/request-demo-api#readme",
+  "dependencies": {
+    "debug": "^4.4.3",
+    "dotenv": "^17.2.1",
+    "express": "^5.2.1",
+    "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/debug": "^4.1.12",
+    "@types/express": "^5.0.5",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^22.18.12",
+    "eslint": "^9.39.2",
+    "globals": "^17.2.0",
+    "husky": "^9.1.7",
+    "jiti": "^2.6.1",
+    "lint-staged": "^16.2.7",
+    "nodemon": "^3.1.11",
+    "prettier": "3.8.1",
+    "ts-node": "^10.9.2",
+    "typescript": "5.8.2",
+    "typescript-eslint": "^8.54.0"
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.{js,ts,css,md}": "prettier --write",
+    "*.ts": "eslint --cache --fix"
+  }
+}
