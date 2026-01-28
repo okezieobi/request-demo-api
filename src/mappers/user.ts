@@ -1,7 +1,8 @@
 import { User } from "../domain/user";
 import { UserDocument } from "../infra/mongodb/documents/user";
+import { BaseMapper } from "./base";
 
-export class UserMapper {
+export class UserMapper extends BaseMapper {
   static toDomain(raw: UserDocument): User {
     return new User({
       firstName: raw.first_name,
@@ -15,6 +16,7 @@ export class UserMapper {
       monthlyProcessingVolume: raw.volume,
       referralSource: raw.source,
       description: raw.notes,
+      ...super.toDomain(raw),
     });
   }
 
@@ -31,8 +33,7 @@ export class UserMapper {
       volume: user.monthlyProcessingVolume,
       source: user.referralSource,
       notes: user.description,
-      created_at: user.createdAt, // Logic for new records
-      updated_at: user.updatedAt,
+      ...super.toPersistence(user),
     };
   }
 }

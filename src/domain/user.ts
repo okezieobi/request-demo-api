@@ -51,6 +51,7 @@ export class User extends Base {
       volume: this.monthlyProcessingVolume,
       source: this.referralSource,
       notes: this.description,
+      ...super.toJSON(),
     };
   }
 }

@@ -6,4 +6,11 @@ export class Base {
     this.createdAt = data.createdAt ?? new Date();
     this.updatedAt = data.updatedAt ?? new Date();
   }
+
+  toJSON() {
+    return {
+      created_at: this.createdAt,
+      updated_at: this.updatedAt,
+    };
+  }
 }
