@@ -1,9 +1,10 @@
+import { WithId } from "mongodb";
 import { User } from "../domain/user";
 import { UserDocument } from "../infra/mongodb/documents/user";
 import { BaseMapper } from "./base";
 
 export class UserMapper extends BaseMapper {
-  static toDomain(raw: UserDocument): User {
+  static toDomain(raw: WithId<UserDocument>): User {
     return new User({
       firstName: raw.first_name,
       lastName: raw.last_name,

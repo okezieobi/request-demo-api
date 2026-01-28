@@ -1,9 +1,11 @@
+import { WithId } from "mongodb";
 import { Base } from "../domain/base";
 import { BaseDocument } from "../infra/mongodb/documents/base";
 
 export class BaseMapper {
-  static toDomain(raw: BaseDocument): Base {
+  static toDomain(raw: WithId<BaseDocument>): Base {
     return new Base({
+      id: raw._id,
       createdAt: raw.created_at,
       updatedAt: raw.updated_at,
     });
