@@ -24,8 +24,14 @@ export class UserServiceInfra extends UserServices {
       if (exists != null) {
         throw new AppError("User already exists", 409);
       }
+      const arg = new User({
+        ...input,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+
       const inserted = await this.userCollection.insertOne(
-        UserMapper.toPersistence(new User(input)),
+        UserMapper.toPersistence(arg),
       );
       const newUser = await this.userCollection.findOne({
         _id: inserted.insertedId,
