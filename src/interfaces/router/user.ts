@@ -3,6 +3,7 @@ import { UserServices } from "../../services/user";
 import { InsertUserDTO } from "../dto/insert-user.req";
 import { PaginateListUsersDTO } from "../dto/paginate-list-users.req";
 import { UserIdDTO } from "../dto/read-user-by-id.req";
+import { UpdateUserDTO } from "../dto/update-user";
 
 export const UserRouter = (services: UserServices) => {
   const router = Router();
@@ -53,6 +54,21 @@ export const UserRouter = (services: UserServices) => {
     try {
       const input = await UserIdDTO.parseAsync(req.params);
       const result = await services.remove(input.user_id);
+      res.send({
+        status: true,
+        message: "success",
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.patch("/:user_id", async (req, res, next) => {
+    try {
+      const filter = await UserIdDTO.parseAsync(req.params);
+      const input = await UpdateUserDTO.parseAsync(req.body);
+      const result = await services.update(input, filter.user_id);
       res.send({
         status: true,
         message: "success",
