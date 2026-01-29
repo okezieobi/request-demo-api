@@ -11,43 +11,20 @@ export class SetUpUserCollectionIndexes {
     try {
       const collection = mongoDatabase.collection<UserDocument>("users");
       // 1. Check if the search index already exists
-      const existingIndexes = await collection.listSearchIndexes().toArray();
-      const searchIndexName = "user_name_search";
-
-      if (existingIndexes.some((idx) => idx.name === searchIndexName)) {
-        debug("Atlas Search index '%s' already exists", searchIndexName);
+      const textIndexName = "user_name_text_search";
+      const existingIndexes = await this.checkIndexExists([textIndexName]);
+      if (existingIndexes) {
+        debug("User collection  first and last name index already exists");
         return;
       }
-
-      // 2. Define the Search Index
-      await collection.createSearchIndexes([
-        {
-          name: searchIndexName,
-          definition: {
-            mappings: {
-              dynamic: false,
-              fields: {
-                // 'lucene.standard' is great for full-text search
-                first_name: {
-                  type: "string",
-                  analyzer: "lucene.standard",
-                },
-                last_name: {
-                  type: "string",
-                  analyzer: "lucene.standard",
-                },
-              },
-            },
-          },
-        },
-      ]);
-
-      debug("Atlas Search index for names initiated successfully");
-    } catch (error) {
-      debug(
-        "Failed to create Atlas Search index (Search is only available on MongoDB Atlas): %O",
-        error,
+      await collection.createIndex(
+        { first_name: "text", last_name: "text" },
+        { name: "user_name_text_search" },
       );
+
+      debug("Text index for names initiated successfully");
+    } catch (error) {
+      debug("Failed to create text index: %O", error);
     }
   }
 
@@ -61,9 +38,10 @@ export class SetUpUserCollectionIndexes {
   }
   private static async forEmail() {
     const collection = mongoDatabase.collection<UserDocument>("users");
-    const email = await this.checkIndexExists(["email"]);
-    if (email) {
-      debug("User collection  email index already");
+    const indexName = "idx_user_email_unique";
+    const emailIndex = await this.checkIndexExists([indexName]);
+    if (emailIndex) {
+      debug("User collection  email index already exists");
       return;
     }
     await collection.createIndex(
@@ -74,11 +52,11 @@ export class SetUpUserCollectionIndexes {
         },
         unique: true,
         collation: { locale: "en", strength: 2 },
-        name: "idx_user_email_unique",
+        name: indexName,
       },
     );
 
-    debug("User collection index successfully created");
+    debug("User collection  email index successfully created");
   }
 
   static async execute() {
