@@ -81,8 +81,8 @@ export class SetUpUserCollectionIndexes {
 
   static async execute() {
     try {
-      await this.forEmail();
-      await this.forNames();
+      // await this.forEmail();
+      // await this.forNames();
       debug("All User collection indexes verified/created.");
     } catch (error) {
       debug("Error setting up User collection indexes: %O", error);
