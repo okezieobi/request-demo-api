@@ -1,27 +1,41 @@
-# Use the latest LTS version of Node.js based on Alpine Linux
-FROM node:lts-alpine
+# --- Stage 1: Build ---
+FROM node:lts-alpine AS builder
 
-# Set the working directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
+# Copy dependency files first to leverage Docker cache
 COPY package*.json ./
-
-# Install dependencies
+# We need devDependencies to run 'tsc'
 RUN npm install
 
-# Copy the rest of the application code
-COPY . .
+# Copy source and config files (tsconfig.json is required for build)
+COPY src ./src
+COPY tsconfig.json .
 
-
-# Build app
+# Run the build script defined in your package.json
 RUN npm run build
 
-# Remove dev dependencies
-RUN npm prune --omit=dev
+# --- Stage 2: Production ---
+FROM node:lts-alpine
 
-# Expose the port the app runs on
+WORKDIR /usr/src/app
+
+# Set production environment
+ENV NODE_ENV=production
+
+# Copy package files
+COPY package*.json ./
+
+# Install ONLY production dependencies (skips husky, eslint, tsc, etc.)
+# Use --ignore-scripts to prevent the 'prepare' script from running
+RUN npm install --omit=dev --ignore-scripts
+
+# Copy the compiled JS from the builder stage
+# Adjust 'dist' if your tsconfig.json 'outDir' is different
+COPY --from=builder /usr/src/app/dist ./dist
+
+# Expose port
 EXPOSE 3000
 
-# Start the application
+# Start using the production command
 CMD ["npm", "start"]

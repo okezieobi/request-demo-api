@@ -3,8 +3,9 @@ services:
     image: mongo:latest
     container_name: mongo
     restart: always
-    env_file:
-      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     ports:
       - "27017:27017"
     volumes:
@@ -16,8 +17,11 @@ services:
       dockerfile: Dockerfile
     container_name: node-app
     restart: always
-    env_file:
-      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: mongodb://root:example@mongo:27017
+      MONGODB_DB: request-demo
     ports:
       - "3000:3000"
     depends_on:
