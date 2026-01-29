@@ -1,37 +1,52 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "./error";
+import { ZodError } from "zod";
 
-// Log errors
-function logErrors(
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
-  console.error(err);
-  next(err);
-}
-
-// Client error handler
-function clientErrorHandler(
-  err: AppError,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
-  if (req.xhr || err instanceof AppError) {
-    res
-      .status(err.status ?? 500)
-      .send({ status: true, message: err.message ?? "error", data: err });
-  } else {
+export class ErrorHandlers {
+  static logErrors(
+    err: Error,
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): void {
+    console.error(err);
     next(err);
   }
-}
 
-// General error handler
-function errorHandler(err: Error, req: Request, res: Response): void {
-  res.status(500);
-  res.render("error", { error: err });
-}
+  static handleZodErrors(
+    err: Error,
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    if (err instanceof ZodError) {
+      res.status(400).send({
+        status: false,
+        message: "Bad Request",
+        data: err,
+      });
+    } else {
+      next(err);
+    }
+  }
 
-export { logErrors, clientErrorHandler, errorHandler };
+  static clientErrorHandler(
+    err: Error,
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): void {
+    if (err instanceof AppError) {
+      res
+        .status(err.status ?? 500)
+        .send({ status: false, message: err.message ?? "error", data: err });
+    } else {
+      next(err);
+    }
+  }
+
+  static errorHandler(err: Error, req: Request, res: Response): void {
+    res.status(500);
+    res.render("error", { error: err });
+  }
+}
