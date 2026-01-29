@@ -11,7 +11,7 @@ import debugLib from "debug";
 
 const debug = debugLib("request-demo-api:server");
 import http from "http";
-import { setupUserIndexes } from "./infra/mongodb/collections/user";
+import { SetUpUserCollectionIndexes } from "./infra/mongodb/collections/user";
 
 /**
  * Get port from environment and store in Express.
@@ -89,6 +89,6 @@ function onListening() {
   const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr?.port;
   debug("Listening on " + bind);
   (async () => {
-    await setupUserIndexes();
+    await SetUpUserCollectionIndexes.execute();
   })();
 }
