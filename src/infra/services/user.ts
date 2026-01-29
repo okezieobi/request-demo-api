@@ -28,7 +28,7 @@ export class UserServiceInfra extends UserServices {
         throw new AppError("User already exists", 409);
       }
       const arg = new User({
-        ...input,
+        ...UserMapper.fromDtoToDomain(input),
         createdAt: new Date(),
         updatedAt: new Date(),
       });

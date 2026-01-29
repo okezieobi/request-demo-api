@@ -2,8 +2,25 @@ import { WithId } from "mongodb";
 import { User } from "../domain/user";
 import { UserDocument } from "../infra/mongodb/documents/user";
 import { BaseMapper } from "./base";
+import { UpdateUserDTO } from "../interfaces/dto/update-user";
 
 export class UserMapper extends BaseMapper {
+  static fromDtoToDomain(input: UpdateUserDTO): User {
+    return new User({
+      firstName: input.firstName,
+      lastName: input.lastName,
+      jobTitle: input.jobTitle,
+      companyName: input.companyName,
+      emailAddress: input.emailAddress,
+      country: input.companyName,
+      phoneNumber: input.phoneNumber,
+      companyWebsite: input.companyWebsite,
+      monthlyProcessingVolume: input.currentMonthlyVolume,
+      referralSource: input.howDidYouHear,
+      description: input.description,
+    });
+  }
+
   static toDomain(raw: WithId<UserDocument>): User {
     return new User({
       firstName: raw.first_name,
