@@ -64,7 +64,7 @@ export const UserRouter = (services: UserServices) => {
     }
   });
 
-  router.patch("/:user_id", async (req, res, next) => {
+  router.put("/:user_id", async (req, res, next) => {
     try {
       const filter = await UserIdDTO.parseAsync(req.params);
       const input = await UpdateUserDTO.parseAsync(req.body);

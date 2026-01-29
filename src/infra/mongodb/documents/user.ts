@@ -9,7 +9,7 @@ export interface UserDocument extends BaseDocument {
   last_name: string;
   job_title: string;
   company_name: string;
-  email: string;
+  email?: string;
   country: string;
   phone: string;
   website?: string;

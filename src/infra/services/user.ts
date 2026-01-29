@@ -28,7 +28,7 @@ export class UserServiceInfra extends UserServices {
         throw new AppError("User already exists", 409);
       }
       const arg = new User({
-        ...UserMapper.fromDtoToDomain(input),
+        ...UserMapper.insertArgsToDomain(input),
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -89,7 +89,7 @@ export class UserServiceInfra extends UserServices {
         _id: new ObjectId(id),
       });
       if (exists == null) {
-        throw new AppError("User not found", 404);
+        throw new AppError("User to be deleted not found", 404);
       }
       await this.userCollection.deleteOne({
         _id: exists._id,
@@ -107,19 +107,38 @@ export class UserServiceInfra extends UserServices {
   async update(input: UpdateUserDTO, id: string): Promise<User | undefined> {
     const userId = new ObjectId(id);
     const session = this.client.startSession();
+
     try {
       session.startTransaction();
       const exists = await this.userCollection.findOne({
         _id: userId,
       });
       if (exists == null) {
-        throw new AppError("User not found", 404);
+        throw new AppError("User to be updated not found", 404);
       }
+      const arg = new User({
+        ...UserMapper.updateArgsToDomain(input),
+        updatedAt: new Date(),
+      });
+      const set = UserMapper.toPersistence(arg);
       const updated = await this.userCollection.updateOne(
         {
           _id: userId,
         },
-        input,
+        {
+          $set: {
+            first_name: set.first_name,
+            last_name: set.last_name,
+            job_title: set.job_title,
+            company_name: set.company_name,
+            country: set.country,
+            phone: set.phone,
+            website: set.website,
+            volume: set.volume,
+            source: set.source,
+            notes: set.notes,
+          },
+        },
       );
       if (updated.modifiedCount < 1) {
         throw new AppError("User to be updated not found", 404);

@@ -3,9 +3,25 @@ import { User } from "../domain/user";
 import { UserDocument } from "../infra/mongodb/documents/user";
 import { BaseMapper } from "./base";
 import { UpdateUserDTO } from "../interfaces/dto/update-user";
+import { InsertUserDTO } from "../interfaces/dto/insert-user.req";
 
 export class UserMapper extends BaseMapper {
-  static fromDtoToDomain(input: UpdateUserDTO): User {
+  static updateArgsToDomain(input: UpdateUserDTO): User {
+    return new User({
+      firstName: input.firstName,
+      lastName: input.lastName,
+      jobTitle: input.jobTitle,
+      companyName: input.companyName,
+      country: input.companyName,
+      phoneNumber: input.phoneNumber,
+      companyWebsite: input.companyWebsite,
+      monthlyProcessingVolume: input.currentMonthlyVolume,
+      referralSource: input.howDidYouHear,
+      description: input.description,
+    });
+  }
+
+  static insertArgsToDomain(input: InsertUserDTO): User {
     return new User({
       firstName: input.firstName,
       lastName: input.lastName,

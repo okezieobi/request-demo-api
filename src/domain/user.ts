@@ -5,7 +5,7 @@ export class User extends Base {
   lastName: string;
   jobTitle: string;
   companyName: string;
-  emailAddress: string;
+  emailAddress?: string;
   country: string;
   phoneNumber: string;
   companyWebsite?: string; // Optional field
@@ -19,7 +19,7 @@ export class User extends Base {
     this.lastName = data.lastName ?? "";
     this.jobTitle = data.jobTitle ?? "";
     this.companyName = data.companyName ?? "";
-    this.emailAddress = data.emailAddress ?? "";
+    this.emailAddress = data.emailAddress;
     this.country = data.country ?? "";
     this.phoneNumber = data.phoneNumber ?? "";
     this.companyWebsite = data.companyWebsite;
