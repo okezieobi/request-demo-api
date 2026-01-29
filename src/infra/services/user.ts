@@ -1,4 +1,4 @@
-import { Filter, MongoClient } from "mongodb";
+import { Filter, MongoClient, ObjectId } from "mongodb";
 import { User } from "../../domain/user";
 import { InsertUserDTO } from "../../interfaces/dto/insert-user.req";
 import { UserServices } from "../../services/user";
@@ -66,5 +66,37 @@ export class UserServiceInfra extends UserServices {
       .skip(limit * input.page)
       .toArray();
     return users.map((user) => UserMapper.toDomain(user));
+  }
+
+  async read(id: string): Promise<User> {
+    const exists = await this.userCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    if (exists == null) {
+      throw new AppError("User not found", 404);
+    }
+    return UserMapper.toDomain(exists);
+  }
+
+  async remove(id: string): Promise<User | undefined> {
+    const session = this.client.startSession();
+    try {
+      session.startTransaction();
+      const exists = await this.userCollection.findOne({
+        _id: new ObjectId(id),
+      });
+      if (exists == null) {
+        throw new AppError("User not found", 404);
+      }
+      await this.userCollection.deleteOne({
+        _id: exists._id,
+      });
+      return UserMapper.toDomain(exists);
+    } catch (error) {
+      console.error("Transaction aborted due to error:", error);
+      await session.abortTransaction();
+    } finally {
+      await session.endSession();
+    }
   }
 }
