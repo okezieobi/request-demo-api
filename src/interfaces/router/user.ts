@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { UserServices } from "../../services/user";
 import { InsertUserDTO } from "../dto/insert-user.req";
-import { PaginateListDTO } from "../dto/paginate-list.req";
+import { PaginateListUsersDTO } from "../dto/paginate-list-users.req";
 
 export const UserRouter = (services: UserServices) => {
   const router = Router();
@@ -22,9 +22,9 @@ export const UserRouter = (services: UserServices) => {
 
   router.post("/list", async (req, res, next) => {
     try {
-      const input = await PaginateListDTO.parseAsync(req.body);
+      const input = await PaginateListUsersDTO.parseAsync(req.body);
       const result = await services.list(input);
-      res.status(201).send({
+      res.send({
         status: true,
         message: "success",
         data: result,

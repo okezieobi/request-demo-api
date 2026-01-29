@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { Filter, MongoClient } from "mongodb";
 import { User } from "../../domain/user";
 import { InsertUserDTO } from "../../interfaces/dto/insert-user.req";
 import { UserServices } from "../../services/user";
@@ -6,7 +6,8 @@ import { UserCollection } from "../mongodb/collections/user";
 
 import { AppError } from "../../error";
 import { UserMapper } from "../../mappers/user";
-import { PaginateListDTO } from "../../interfaces/dto/paginate-list.req";
+import { PaginateListUsersDTO } from "../../interfaces/dto/paginate-list-users.req";
+import { UserDocument } from "../mongodb/documents/user";
 
 export class UserServiceInfra extends UserServices {
   constructor(
@@ -20,7 +21,7 @@ export class UserServiceInfra extends UserServices {
     try {
       session.startTransaction();
       const exists = await this.userCollection.findOne({
-        email: { $regex: input.emailAddress, options: "i" },
+        email: { $regex: input.emailAddress, $options: "i" },
       });
       if (exists != null) {
         throw new AppError("User already exists", 409);
@@ -50,10 +51,17 @@ export class UserServiceInfra extends UserServices {
     }
   }
 
-  async list(input: PaginateListDTO): Promise<User[]> {
+  async list(input: PaginateListUsersDTO): Promise<User[]> {
     const limit = 10;
+    const filter: Filter<UserDocument> = {};
+    if (input.name) {
+      filter.$or = [
+        { first_name: { $regex: input.name, $options: "i" } },
+        { last_name: { $regex: input.name, $options: "i" } },
+      ];
+    }
     const users = await this.userCollection
-      .find({})
+      .find(filter)
       .limit(limit)
       .skip(limit * input.page)
       .toArray();
