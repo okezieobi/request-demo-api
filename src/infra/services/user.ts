@@ -6,6 +6,7 @@ import { UserCollection } from "../mongodb/collections/user";
 
 import { AppError } from "../../error";
 import { UserMapper } from "../../mappers/user";
+import { PaginateListDTO } from "../../interfaces/dto/paginate-list.req";
 
 export class UserServiceInfra extends UserServices {
   constructor(
@@ -47,5 +48,15 @@ export class UserServiceInfra extends UserServices {
     } finally {
       await session.endSession();
     }
+  }
+
+  async list(input: PaginateListDTO): Promise<User[]> {
+    const limit = 10;
+    const users = await this.userCollection
+      .find({})
+      .limit(limit)
+      .skip(limit * input.page)
+      .toArray();
+    return users.map((user) => UserMapper.toDomain(user));
   }
 }
