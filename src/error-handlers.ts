@@ -14,7 +14,7 @@ export class ErrorHandlers {
   }
 
   static handleZodErrors(
-    err: Error,
+    err: unknown,
     req: Request,
     res: Response,
     next: NextFunction,
@@ -23,7 +23,7 @@ export class ErrorHandlers {
       res.status(400).send({
         status: false,
         message: "Bad Request",
-        data: err,
+        data: err.issues,
       });
     } else {
       next(err);

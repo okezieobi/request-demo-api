@@ -9,9 +9,9 @@ const debug = debugLib("request-demo-api:user-collection");
 export class SetUpUserCollectionIndexes {
   private static async forNames() {
     try {
+      const collection = mongoDatabase.collection<UserDocument>("users");
       // 1. Check if the search index already exists
-      const existingIndexes =
-        await UserCollection.listSearchIndexes().toArray();
+      const existingIndexes = await collection.listSearchIndexes().toArray();
       const searchIndexName = "user_name_search";
 
       if (existingIndexes.some((idx) => idx.name === searchIndexName)) {
@@ -20,7 +20,7 @@ export class SetUpUserCollectionIndexes {
       }
 
       // 2. Define the Search Index
-      await UserCollection.createSearchIndexes([
+      await collection.createSearchIndexes([
         {
           name: searchIndexName,
           definition: {
@@ -52,19 +52,21 @@ export class SetUpUserCollectionIndexes {
   }
 
   private static async checkIndexExists(fields: string[]): Promise<boolean> {
-    const indexes = await UserCollection.listIndexes().toArray();
+    const collection = mongoDatabase.collection<UserDocument>("users");
+    const indexes = await collection.listIndexes().toArray();
     return indexes.some((index) => {
       const keys = Object.keys(index.key);
       return fields.every((field) => keys.includes(field));
     });
   }
   private static async forEmail() {
+    const collection = mongoDatabase.collection<UserDocument>("users");
     const email = await this.checkIndexExists(["email"]);
     if (email) {
-      debug.log("User collection  email index already");
+      debug("User collection  email index already");
       return;
     }
-    await UserCollection.createIndex(
+    await collection.createIndex(
       { email: 1 },
       {
         partialFilterExpression: {
@@ -76,13 +78,13 @@ export class SetUpUserCollectionIndexes {
       },
     );
 
-    debug.log("User collection index successfully created");
+    debug("User collection index successfully created");
   }
 
   static async execute() {
     try {
-      // await this.forEmail();
-      // await this.forNames();
+      await this.forEmail();
+      await this.forNames();
       debug("All User collection indexes verified/created.");
     } catch (error) {
       debug("Error setting up User collection indexes: %O", error);
