@@ -38,7 +38,7 @@ export class User extends Base {
   /**
    * Logic to format data for an API payload
    */
-  toJSON() {
+  protected toJSON() {
     return {
       first_name: this.firstName,
       last_name: this.lastName,

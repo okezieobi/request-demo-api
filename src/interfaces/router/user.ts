@@ -14,7 +14,7 @@ export const UserRouter = (services: UserServices) => {
       res.status(201).send({
         status: true,
         message: "success",
-        data: result.toJSON(),
+        data: result,
       });
     } catch (error) {
       next(error);

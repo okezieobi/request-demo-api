@@ -9,7 +9,7 @@ export class Base {
     this.updatedAt = data.updatedAt ?? new Date();
   }
 
-  toJSON() {
+  protected toJSON() {
     return {
       id: this.id,
       created_at: this.createdAt,

@@ -73,7 +73,7 @@ export class UserServiceInfra extends UserServices {
 
   async read(id: string): Promise<User> {
     const exists = await this.userCollection.findOne({
-      _id: { $eq: new ObjectId(id) },
+      _id: new ObjectId(id),
     });
     if (exists == null) {
       throw new AppError("User not found", 404);
@@ -86,13 +86,13 @@ export class UserServiceInfra extends UserServices {
     try {
       session.startTransaction();
       const exists = await this.userCollection.findOne({
-        _id: { $eq: new ObjectId(id) },
+        _id: new ObjectId(id),
       });
       if (exists == null) {
         throw new AppError("User not found", 404);
       }
       await this.userCollection.deleteOne({
-        _id: { $eq: exists._id },
+        _id: exists._id,
       });
       return UserMapper.toDomain(exists);
     } catch (error) {
