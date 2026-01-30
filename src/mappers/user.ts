@@ -18,6 +18,7 @@ export class UserMapper extends BaseMapper {
       monthlyProcessingVolume: input.currentMonthlyVolume,
       referralSource: input.howDidYouHear,
       description: input.description,
+      updatedAt: new Date(),
     });
   }
 
@@ -34,6 +35,8 @@ export class UserMapper extends BaseMapper {
       monthlyProcessingVolume: input.currentMonthlyVolume,
       referralSource: input.howDidYouHear,
       description: input.description,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
   }
 

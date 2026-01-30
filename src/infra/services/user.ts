@@ -27,14 +27,9 @@ export class UserServiceInfra extends UserServices {
       if (exists != null) {
         throw new AppError("User already exists", 409);
       }
-      const arg = new User({
-        ...UserMapper.insertArgsToDomain(input),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
 
       const inserted = await this.userCollection.insertOne(
-        UserMapper.toPersistence(arg),
+        UserMapper.toPersistence(UserMapper.insertArgsToDomain(input)),
       );
       const newUser = await this.userCollection.findOne({
         _id: inserted.insertedId,
@@ -116,11 +111,9 @@ export class UserServiceInfra extends UserServices {
       if (exists == null) {
         throw new AppError("User to be updated not found", 404);
       }
-      const arg = new User({
-        ...UserMapper.updateArgsToDomain(input),
-        updatedAt: new Date(),
-      });
-      const set = UserMapper.toPersistence(arg);
+      const set = UserMapper.toPersistence(
+        UserMapper.updateArgsToDomain(input),
+      );
       const updated = await this.userCollection.updateOne(
         {
           _id: userId,
