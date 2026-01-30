@@ -30,10 +30,10 @@ This API provides comprehensive user management capabilities including creating,
 ## API Endpoints
 
 - `POST /api/v1/users` - Create a new user
-- `GET /api/v1/users` - List users with pagination
-- `GET /api/v1/users/:id` - Get a specific user
-- `PUT /api/v1/users/:id` - Update a user
-- `DELETE /api/v1/users/:id` - Delete a user
+- `POST /api/v1/users/list` - List users with pagination
+- `GET /api/v1/users/:user_id` - Get a specific user
+- `PUT /api/v1/users/:user_id` - Update a user
+- `DELETE /api/v1/users/:user_id` - Delete a user
 
 See the [Postman documentation](https://documenter.getpostman.com/view/37684547/2sBXVo8nqA) for detailed API specifications.
 
